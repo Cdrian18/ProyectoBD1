@@ -1,0 +1,58 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background-color: #ddd; /* Color sutilmente diferente al del menú lateral */
+    padding: 10px;
+    text-align: center;
+}
+
+.logo {
+    font-size: 24px;
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px; /* Ancho del menú lateral */
+    background-color: #333;
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    padding: 10px;
+    display: block;
+    transition: background-color 0.3s ease; /* Efecto de transición al pasar el ratón */
+}
+
+.sidebar a:hover {
+    background-color: #555; /* Cambia el color al pasar el ratón */
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 250px; /* Ajusta el margen para dejar espacio para el menú lateral */
+}
+
+h1 {
+    color: #333;
+}
