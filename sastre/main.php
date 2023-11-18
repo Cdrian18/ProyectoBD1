@@ -1,6 +1,13 @@
 <?php
+
+
+
+include_once "conexion.php";
+include_once "sesion.php";
 // Verificar si la sesión no está iniciada, redirigir al inicio de sesión
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['idEmpleado'])) {
     header("Location: login.php");
     exit();
@@ -8,6 +15,8 @@ if (!isset($_SESSION['idEmpleado'])) {
 
 // Puedes acceder a la variable de sesión 'nombreEmpleado'
 $nombreEmpleado = $_SESSION['nombreEmpleado'];
+
+
 ?>
 
 <!DOCTYPE html>
