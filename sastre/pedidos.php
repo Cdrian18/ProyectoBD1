@@ -1,51 +1,26 @@
 <?php
 include_once "conexion.php";
 include_once "sesion.php";
+
 // Verificar si no hay una sesión de empleado iniciada
 if (!isset($_SESSION['idEmpleado'])) {
     header("Location: login.php");
     exit();
 }
 
-// Verificar si se ha enviado el formulario de registro de pedido
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener datos del formulario
-    $fecha_entrega = $_POST['fecha_entrega'];
-    $estado = $_POST['estado'];
-    $id_cliente = $_POST['id_cliente'];
-    $nombre_cliente = $_POST['nombre_cliente'];
-    $apellido_cliente = $_POST['apellido_cliente'];
-    $telefono_cliente = $_POST['telefono_cliente'];
+// Lógica para mostrar la lista de pedidos
+$sql_lista_pedidos = "SELECT P.*, C.nombre AS nombre_cliente, C.apellido AS apellido_cliente, D.cantidad, D.descripcion, PR.nombre AS nombre_prenda
+                     FROM Pedidos P
+                     JOIN Trabajo_Empleado TE ON P.id_pedido = TE.Pedidos_id_pedido
+                     JOIN Clientes C ON P.idCliente = C.id_Cliente
+                     LEFT JOIN Detalles_Pedido D ON P.id_pedido = D.Pedidos_id_Pedido
+                     LEFT JOIN Prendas PR ON D.Prendas_id_Prenda = PR.id_prenda
+                     WHERE TE.Empleados_id_empleado = {$_SESSION['idEmpleado']}";
 
-    // Validar los datos según tus necesidades
-
-    // Insertar el nuevo cliente si no existe
-    $sql_cliente = "INSERT INTO Clientes (id_Cliente, nombre, apellido, telefono) 
-                    VALUES ('$id_cliente', '$nombre_cliente', '$apellido_cliente', '$telefono_cliente')
-                    ON DUPLICATE KEY UPDATE nombre = '$nombre_cliente', apellido = '$apellido_cliente', telefono = '$telefono_cliente'";
-    
-    $conn->query($sql_cliente);
-
-    // Obtener el ID del cliente
-    $sql_get_cliente_id = "SELECT id_Cliente FROM Clientes WHERE id_Cliente = '$id_cliente'";
-    $result_cliente_id = $conn->query($sql_get_cliente_id);
-
-    if ($result_cliente_id->num_rows > 0) {
-        $row_cliente = $result_cliente_id->fetch_assoc();
-        $id_cliente = $row_cliente['id_Cliente'];
-    }
-
-    // Insertar el nuevo pedido en la base de datos
-    $sql_pedido = "INSERT INTO Pedidos (fecha_entrega, estado, idCliente) 
-                   VALUES ('$fecha_entrega', '$estado', '$id_cliente')";
-    
-    if ($conn->query($sql_pedido) === TRUE) {
-        echo "Pedido registrado con éxito";
-    } else {
-        echo "Error al registrar el pedido: " . $conn->error;
-    }
+$result_lista_pedidos = $conn->query($sql_lista_pedidos);
+if ($result_lista_pedidos === FALSE) {
+    die("Error en la consulta SQL: " . $conn->error);
 }
-
 // Cerrar la conexión a la base de datos
 $conn->close();
 ?>
@@ -56,20 +31,20 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="CSS/PedidosStyles.css">
-    <title>Registrar Pedido</title>
+    <title>Lista de Pedidos</title>
 </head>
 
 <body>
 
     <div class="header">
-        <div class="logo">Nombre de la Sastrería</div>
+        <div class="logo">Sastrería</div>
     </div>
 
     <div class="container">
         <!-- Menú lateral -->
         <nav class="sidebar">
             <ul>
-                <li><a href="main.php">Inicio</a></li>
+                <li><a href="pagina_principal.php">Inicio</a></li>
                 <li><a href="pedidos.php">Pedidos</a></li>
                 <li><a href="ventas.php">Ventas</a></li>
                 <li><a href="envios.php">Envíos</a></li>
@@ -79,37 +54,60 @@ $conn->close();
 
         <!-- Contenido principal -->
         <div class="main-content">
-            <h1><?php echo $nombreEmpleado; ?></h1>
+            <h1>Bienvenido(a), <?php echo $nombreEmpleado; ?></h1>
 
-            <h2>Registrar Pedido</h2>
-            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-                <label for="fecha_entrega">Fecha de Entrega:</label>
-                <input type="date" id="fecha_entrega" name="fecha_entrega" required>
+            <h2>Lista de Pedidos</h2>
+            <!-- Mostrar la lista de pedidos desde la base de datos -->
+            <?php
+            if ($result_lista_pedidos->num_rows > 0) {
+                echo "<ul>";
+                while ($row_pedido = $result_lista_pedidos->fetch_assoc()) {
+                    echo "<li onclick='mostrarDetallesPedido(" . $row_pedido['id_pedido'] . ", \"" . $row_pedido['estado'] . "\", \"" . $row_pedido['fecha_entrega'] . "\", \"" . $row_pedido['nombre_cliente'] . "\", \"" . $row_pedido['apellido_cliente'] . "\", \"" . $row_pedido['cantidad'] . "\", \"" . $row_pedido['descripcion'] . "\", \"" . $row_pedido['nombre_prenda'] . "\")'>Pedido " . $row_pedido['id_pedido'] . " - Estado: " . $row_pedido['estado'] . " - Fecha de Entrega: " . $row_pedido['fecha_entrega'] . "</li>";
+                }
+                echo "</ul>";
+            } else {
+                echo "No hay pedidos disponibles.";
+            }
+            ?>
 
-                <label for="estado">Estado:</label>
-                <select id="estado" name="estado">
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="En proceso">En proceso</option>
-                    <option value="Entregado">Entregado</option>
-                </select>
-
-                <!-- Agregar campos para el cliente -->
-                <label for="id_cliente">ID del Cliente:</label>
-                <input type="text" id="id_cliente" name="id_cliente" required>
-
-                <label for="nombre_cliente">Nombre del Cliente:</label>
-                <input type="text" id="nombre_cliente" name="nombre_cliente" required>
-
-                <label for="apellido_cliente">Apellido del Cliente:</label>
-                <input type="text" id="apellido_cliente" name="apellido_cliente" required>
-
-                <label for="telefono_cliente">Teléfono del Cliente:</label>
-                <input type="text" id="telefono_cliente" name="telefono_cliente" required>
-
-                <button type="submit">Registrar Pedido</button>
-            </form>
+            <!-- Botón para añadir otro pedido -->
+            <a href="registro_pedido.php" class="add-button">Añadir Pedido</a>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Detalles del Pedido</h3>
+            <p id="detallePedido"></p>
+        </div>
+    </div>
+
+    <!-- Script para manejar la apertura y cierre del modal y mostrar detalles del pedido -->
+    <script>
+        var modal = document.getElementById("myModal");
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        function mostrarDetallesPedido(idPedido, estado, fechaEntrega, nombreCliente, apellidoCliente, cantidad, descripcion, nombrePrenda) {
+            var detallePedido = document.getElementById("detallePedido");
+            detallePedido.innerHTML = "Pedido " + idPedido + "<br>" +
+                                      "Estado: " + estado + "<br>" +
+                                      "Fecha de Entrega: " + fechaEntrega + "<br>" +
+                                      "Cliente: " + nombreCliente + " " + apellidoCliente + "<br>" +
+                                      "Detalles: Cantidad: " + cantidad + ", Descripción: " + descripcion + ", Prenda: " + nombrePrenda;
+            modal.style.display = "block";
+        }
+
+        document.getElementsByClassName("close")[0].onclick = function() {
+            modal.style.display = "none";
+        };
+    </script>
 
 </body>
 

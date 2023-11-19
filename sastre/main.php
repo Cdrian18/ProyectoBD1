@@ -37,7 +37,7 @@ $nombreEmpleado = $_SESSION['nombreEmpleado'];
         <!-- Menú lateral -->
         <nav class="sidebar">
             <ul>
-                <li><a href="pagina_principal.php">Inicio</a></li>
+                <li><a href="main.php">Inicio</a></li>
                 <li><a href="pedidos.php">Pedidos</a></li>
                 <li><a href="ventas.php">Ventas</a></li>
                 <li><a href="envios.php">Envíos</a></li>
@@ -47,7 +47,7 @@ $nombreEmpleado = $_SESSION['nombreEmpleado'];
 
         <!-- Contenido principal -->
         <div class="main-content">
-            <h1>Bienvenido, <?php echo $nombreEmpleado; ?></h1>
+            <h1>Bienvenido(a), <?php echo $nombreEmpleado; ?></h1>
             <!-- Contenido de la sección principal -->
         </div>
     </div>

@@ -1,0 +1,118 @@
+/* Estilos comunes para las páginas */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+}
+
+/* Estilos para el menú lateral */
+.sidebar {
+    width: 250px; /* Ancho del menú lateral */
+    background-color: #333;
+    padding-top: 20px;
+    position: fixed; /* Cambiado de absolute a fixed */
+    height: 100%;
+    top: 0; /* Alinea la barra lateral en la parte superior */
+    left: 0; /* Asegura que la barra lateral esté pegada al lado izquierdo */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    padding: 10px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar a:hover {
+    background-color: #555;
+}
+
+
+/* Estilos para el contenido principal */
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 300px; /* Ancho del menú lateral + un margen */
+}
+
+h1, h2 {
+    color: #333;
+}
+
+/* Estilos para el formulario de registro de pedido */
+
+form {
+    max-width: 400px;
+    margin: auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Estilos para la lista de pedidos */
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 10px;
+}
+
+.add-button {
+    display: inline-block;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: #fff;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.add-button:hover {
+    background-color: #45a049;
+}
