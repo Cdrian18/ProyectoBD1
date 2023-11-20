@@ -44,7 +44,7 @@ $conn->close();
         <!-- Menú lateral -->
         <nav class="sidebar">
             <ul>
-                <li><a href="pagina_principal.php">Inicio</a></li>
+                <li><a href="main.php">Inicio</a></li>
                 <li><a href="pedidos.php">Pedidos</a></li>
                 <li><a href="ventas.php">Ventas</a></li>
                 <li><a href="envios.php">Envíos</a></li>
