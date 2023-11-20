@@ -37,9 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row_cliente = $result_cliente_id->fetch_assoc();
             $id_cliente = $row_cliente['id_Cliente'];
 
-            $sql_insert_telefono = "INSERT INTO Telefono (telefono, Clientes_id_cliente) 
+            $sql_insert_telefono = "INSERT INTO Telefono (numero, Clientes_id_cliente) 
                                     VALUES ('$telefono_cliente', '$id_cliente')
-                                    ON DUPLICATE KEY UPDATE telefono = '$telefono_cliente'";
+                                    ON DUPLICATE KEY UPDATE numero = '$telefono_cliente'";
 
             $conn->query($sql_insert_telefono);
 
@@ -50,21 +50,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($conn->query($sql_insert_pedido) === TRUE) {
                 $id_nuevo_pedido = $conn->insert_id;
 
-    // Obtener datos de la prenda
-    $id_prenda = $_POST['prenda'];
-    $cantidad = $_POST['cantidad'];
-    $descripcion = $_POST['descripcion_prenda'];
+                // Obtener datos de la prenda
+                $id_prenda = $_POST['prenda'];
+                $cantidad = $_POST['cantidad'];
+                $descripcion = $_POST['descripcion_prenda'];
 
-    // Insertar el detalle del pedido en la base de datos
-    $sql_insert_detalle_pedido = "INSERT INTO Detalles_Pedido (cantidad, Pedidos_id_Pedido, Prendas_id_Prenda, descripcion) 
+                // Insertar el detalle del pedido en la base de datos
+                $sql_insert_detalle_pedido = "INSERT INTO Detalles_Pedido (cantidad, Pedidos_id_Pedido, Prendas_id_Prenda, descripcion) 
                                  VALUES ('$cantidad', '$id_nuevo_pedido', '$id_prenda','$descripcion')";
 
-    if ($conn->query($sql_insert_detalle_pedido) === TRUE) {
-    } else {
-        echo "Error al insertar detalles del pedido: " . $conn->error;
-    }
+                if ($conn->query($sql_insert_detalle_pedido) === TRUE) {
+                } else {
+                    echo "Error al insertar detalles del pedido: " . $conn->error;
+                }
 
-                
+
                 // Insertar el registro en la tabla Trabajo_Empleado
                 $sql_insert_trabajo = "INSERT INTO Trabajo_Empleado (Pedidos_id_pedido, Empleados_id_empleado)
                                       VALUES ('$id_nuevo_pedido', {$_SESSION['idEmpleado']})";
@@ -175,7 +175,7 @@ $conn->close();
 
     <script>
         // Script para añadir dinámicamente más campos de prendas
-        document.getElementById('addPrenda').addEventListener('click', function () {
+        document.getElementById('addPrenda').addEventListener('click', function() {
             var prendasSection = document.querySelector('.prendas-section');
             var nuevaPrenda = prendasSection.cloneNode(true);
             prendasSection.parentNode.appendChild(nuevaPrenda);
