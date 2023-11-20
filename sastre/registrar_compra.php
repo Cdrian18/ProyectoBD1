@@ -21,11 +21,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $total = $_POST['total'];
     $proveedor = $_POST['proveedor'];
 
-    // Inserta la nueva compra en la base de datos
-    $compraQuery = "INSERT INTO compras (fecha, total, Proveedores_id_proveedor) VALUES ('$fecha', '$total', '$proveedor')";
-    
-    if ($conn->query($compraQuery) === TRUE) {
-        $last_id = $conn->insert_id;
+    // Prepara la consulta SQL
+    $compraQuery = $conn->prepare("INSERT INTO compras (fecha, total, Proveedores_id_proveedor) VALUES (?, ?, ?)");
+    $compraQuery->bind_param("sdi", $fecha, $total, $proveedor);
+
+    // Ejecuta la consulta SQL
+    if ($compraQuery->execute()) {
+        $last_id = $compraQuery->insert_id;
         echo "<script type='text/javascript'>alert('Nueva compra registrada con éxito. ID de la compra: " . $last_id . "');</script>";
 
         // Obtén los arrays de materiales, cantidades y precios
@@ -33,19 +35,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $cantidades = explode(',',rtrim($_POST['cantidad'][0], ','));
         $precios = explode(',',rtrim($_POST['precio'][0], ','));
 
+        // Prepara la consulta SQL para los detalles de la compra
+        $detalleCompraQuery = $conn->prepare("INSERT INTO detalles_compra (compras_id_compra, Materiales_id_material, cantidad, precio) VALUES (?, ?, ?, ?)");
+
         // Itera sobre los arrays e inserta cada detalle de la compra en la base de datos
         for ($i = 0; $i < count($materiales); $i++) {
             $material = $materiales[$i];
             $cantidad = $cantidades[$i];
             $precio = $precios[$i];
 
-            $detalleCompraQuery = "INSERT INTO detalles_compra (compras_id_compra, Materiales_id_material, cantidad, precio) VALUES ('$last_id', '$material', '$cantidad', '$precio')";
-            if ($conn->query($detalleCompraQuery) !== TRUE) {
-                echo "Error: " . $detalleCompraQuery . "<br>" . $conn->error;
+            $detalleCompraQuery->bind_param("iidd", $last_id, $material, $cantidad, $precio);
+            if (!$detalleCompraQuery->execute()) {
+                echo "Error: " . $detalleCompraQuery->error;
             }
         }
     } else {
-        echo "Error: " . $compraQuery . "<br>" . $conn->error;
+        echo "Error: " . $compraQuery->error;
     }
 }
 

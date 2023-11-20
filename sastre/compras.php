@@ -99,7 +99,7 @@ require_once 'compras.php';
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr><td>" . $row["fecha"] . "</td><td>" . $row["total"] . "</td><td>" . $row["nombre_del_proveedor"] . "</td>";
-                        echo "<td><a href='javascript:verDetalles(\"" . $row["id_compra"] . "\")'>Ver detalles</a></td></tr>";
+                        echo "<td><button onclick='verDetalles(\"" . $row["id_compra"] . "\")'>Ver detalles</button></td></tr>";
                     }
                 } else {
                     echo "<tr><td colspan='4'>No hay compras</td></tr>";
@@ -138,7 +138,6 @@ require_once 'compras.php';
         }
 
         function mostrarDetallesCompra(detallesCompra) {
-            console.log("mostrarDetallesCompra llamado con detallesCompra:", detallesCompra);
             var detalleCompra = document.getElementById("detalleCompra");
             detalleCompra.innerHTML = "ID Compra: " + detallesCompra[0].compras_id_compra + "<br><br>";
             detallesCompra.forEach(function(detalle) {
