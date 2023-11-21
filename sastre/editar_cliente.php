@@ -11,63 +11,61 @@ if (!isset($_SESSION['idEmpleado'])) {
 // Si se ha enviado el formulario, procesar los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger los datos del formulario
-    $idEmpleado = $_POST['idEmpleado'];
+    $idCliente = $_POST['idCliente'];
     $nombre = $_POST['nombre'];
     $apellido = $_POST['apellido'];
-    $salario = $_POST['salario'];
-    $fecha_nacimiento = $_POST['fecha_nacimiento'];
+    $direccion = $_POST['direccion'];
     $telefono = $_POST['telefono'];
 
-    // Preparar la consulta SQL para actualizar la tabla empleados
-    $sql = "UPDATE empleado SET nombre = ?, apellido = ?, salario = ?, fecha_nacimiento = ? WHERE idEmpleado = ?";
+    // Preparar la consulta SQL para actualizar la tabla clientes
+    $sql = "UPDATE clientes SET nombre = ?, apellido = ?, direccion = ? WHERE id_Cliente = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssisi", $nombre, $apellido, $salario, $fecha_nacimiento, $idEmpleado);
+    $stmt->bind_param("sssi", $nombre, $apellido, $direccion, $idCliente);
 
     // Ejecutar la consulta SQL
     if ($stmt->execute()) {
         // Preparar la consulta SQL para actualizar la tabla telefono
-        $sqlTelefono = "UPDATE telefono SET numero = ? WHERE Empleados_id_Empleado = ?";
+        $sqlTelefono = "UPDATE telefono SET numero = ? WHERE Clientes_id_cliente = ?";
         $stmtTelefono = $conn->prepare($sqlTelefono);
-        $stmtTelefono->bind_param("si", $telefono, $idEmpleado);
+        $stmtTelefono->bind_param("si", $telefono, $idCliente);
 
         // Ejecutar la consulta SQL
         if ($stmtTelefono->execute()) {
-            echo "Empleado y teléfono actualizados con éxito.";
-            // Redirige al usuario a empleados.php solo si la actualización fue exitosa
-            header("Location: empleados.php");
+            echo "Cliente y teléfono actualizados con éxito.";
+            // Redirige al usuario a clientes.php solo si la actualización fue exitosa
+            header("Location: clientes.php");
             exit();
         } else {
             echo "Error al actualizar el teléfono: " . $stmtTelefono->error;
         }
     } else {
-        echo "Error al actualizar el empleado: " . $stmt->error;
+        echo "Error al actualizar el cliente: " . $stmt->error;
     }
 } else {
-    // Si el formulario no se ha enviado, obtener los datos del empleado existente
-    $idEmpleado = $_GET['id'];
+    // Si el formulario no se ha enviado, obtener los datos del cliente existente
+    $idCliente = $_GET['id'];
 
-    // Preparar la consulta SQL para obtener los datos del empleado
-    $sql = "SELECT e.nombre, e.apellido, e.salario, e.fecha_nacimiento, t.numero FROM empleado e JOIN telefono t ON e.idEmpleado = t.Empleados_id_Empleado WHERE e.idEmpleado = ?";
+    // Preparar la consulta SQL para obtener los datos del cliente
+    $sql = "SELECT c.nombre, c.apellido, c.direccion, t.numero FROM clientes c JOIN telefono t ON c.id_Cliente = t.Clientes_id_cliente WHERE c.id_Cliente = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $idEmpleado);
+    $stmt->bind_param("i", $idCliente);
     // Ejecutar la consulta SQL
     if ($stmt->execute()) {
         // Obtener los resultados de la consulta
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
-            // Obtener los datos del empleado
+            // Obtener los datos del cliente
             $row = $result->fetch_assoc();
             $nombre = $row['nombre'];
             $apellido = $row['apellido'];
-            $salario = $row['salario'];
-            $fecha_nacimiento = $row['fecha_nacimiento'];
+            $direccion = $row['direccion'];
             $telefono = $row['numero'];
         } else {
-            echo "No se encontró el empleado.";
+            echo "No se encontró el cliente.";
             exit();
         }
     } else {
-        echo "Error al obtener los datos del empleado: " . $stmt->error;
+        echo "Error al obtener los datos del cliente: " . $stmt->error;
     }
 }
 
@@ -81,8 +79,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="CSS/Mainstyles.css">
     <link rel="stylesheet" href="CSS/ComprasStyles.css">
-    <link rel="stylesheet" href="CSS/EmpleadoStyles.css">
-    <title>Página Principal</title>
+    <link rel="stylesheet" href="CSS/EmpleadoStyle.css">
+    <title>Editar Cliente</title>
 </head>
 
 <body>
@@ -109,20 +107,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <!-- Contenido principal -->
         <div class="main-container">
-            <h2>Editar Empleado</h2>
+            <h2>Editar Cliente</h2>
 
-            <form method="post" action="editar_empleado.php">
-                <label for="idEmpleado">ID del Empleado:</label><br>
-                <p id="idEmpleado"><?php echo $idEmpleado; ?></p>
-                <input type="hidden" name="idEmpleado" value="<?php echo $idEmpleado; ?>">
+            <form method="post" action="editar_cliente.php">
+                <label for="idCliente">ID del Cliente:</label><br>
+                <p id="idCliente"><?php echo $idCliente; ?></p>
+                <input type="hidden" name="idCliente" value="<?php echo $idCliente; ?>">
                 <label for="nombre">Nombre:</label><br>
                 <input type="text" id="nombre" name="nombre" value="<?php echo $nombre; ?>"><br>
                 <label for="apellido">Apellido:</label><br>
                 <input type="text" id="apellido" name="apellido" value="<?php echo $apellido; ?>"><br>
-                <label for="salario">Salario:</label><br>
-                <input type="number" id="salario" name="salario" value="<?php echo $salario; ?>"><br>
-                <label for="fecha_nacimiento">Fecha de Nacimiento:</label><br>
-                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?php echo $fecha_nacimiento; ?>"><br>
+                <label for="direccion">Dirección:</label><br>
+                <input type="text" id="direccion" name="direccion" value="<?php echo $direccion; ?>"><br>
                 <label for="telefono">Teléfono:</label><br>
                 <input type="tel" id="telefono" name="telefono" value="<?php echo $telefono; ?>"><br>
                 <input type="submit" value="Actualizar">

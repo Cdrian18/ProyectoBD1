@@ -49,6 +49,10 @@ $conn->close();
                 <li><a href="ventas.php">Ventas</a></li>
                 <li><a href="envios.php">Envíos</a></li>
                 <li><a href="perfil.php">Perfil</a></li>
+                <li><a href="compras.php">Compras</a></li>
+                <li><a href="empleados.php">Empleados</a></li>
+                <li><a href="clientes.php">Clientes</a></li>
+                <li><a href="estadisticas.php">Estadísticas</a></li>
             </ul>
         </nav>
 
@@ -97,10 +101,10 @@ $conn->close();
         function mostrarDetallesPedido(idPedido, estado, fechaEntrega, nombreCliente, apellidoCliente, cantidad, descripcion, nombrePrenda) {
             var detallePedido = document.getElementById("detallePedido");
             detallePedido.innerHTML = "Pedido " + idPedido + "<br>" +
-                                      "Estado: " + estado + "<br>" +
-                                      "Fecha de Entrega: " + fechaEntrega + "<br>" +
-                                      "Cliente: " + nombreCliente + " " + apellidoCliente + "<br>" +
-                                      "Detalles: Cantidad: " + cantidad + ", Descripción: " + descripcion + ", Prenda: " + nombrePrenda;
+                "Estado: " + estado + "<br>" +
+                "Fecha de Entrega: " + fechaEntrega + "<br>" +
+                "Cliente: " + nombreCliente + " " + apellidoCliente + "<br>" +
+                "Detalles: Cantidad: " + cantidad + ", Descripción: " + descripcion + ", Prenda: " + nombrePrenda;
             modal.style.display = "block";
         }
 

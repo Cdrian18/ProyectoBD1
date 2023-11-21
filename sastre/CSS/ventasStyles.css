@@ -1,3 +1,5 @@
+/* Agrega estos estilos a tu archivo CSS principal o crea uno nuevo */
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -46,46 +48,39 @@ body {
 .sidebar a:hover {
     background-color: #555; /* Cambia el color al pasar el ratón */
 }
-
 .main-content {
     flex-grow: 1;
     padding: 20px;
     margin-left: 250px; /* Ajusta el margen para dejar espacio para el menú lateral */
 }
-
-/* Lista de envíos */
 h2 {
     color: #333;
 }
 
-.envios-list {
-    list-style: none;
-    padding: 0;
+.ventas-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
-.envios-item {
+.ventas-table th, .ventas-table td {
     border: 1px solid #ddd;
-    margin-bottom: 10px;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 8px;
+    text-align: left;
 }
 
-.envios-button {
-    background-color: #4CAF50;
+.ventas-table th {
+    background-color: #f2f2f2;
+}
+
+button {
+    background-color: #4caf50;
     color: white;
+    padding: 8px 12px;
     border: none;
-    padding: 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
     cursor: pointer;
-    border-radius: 5px;
-    margin-left: 10px;
 }
 
-.envios-button:hover {
+button:hover {
     background-color: #45a049;
 }

@@ -44,6 +44,7 @@ $nombreEmpleado = $_SESSION['nombreEmpleado'];
                 <li><a href="perfil.php">Perfil</a></li>
                 <li><a href="compras.php">Compras</a></li>
                 <li><a href="empleados.php">Empleados</a></li>
+                <li><a href="clientes.php">Clientes</a></li>
                 <li><a href="estadisticas.php">Estadísticas</a></li>
             </ul>
         </nav>

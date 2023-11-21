@@ -11,37 +11,35 @@ if (!isset($_SESSION['idEmpleado'])) {
 // Si se ha enviado el formulario, procesar los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger los datos del formulario
-    $idEmpleado = $_POST['idEmpleado'];
+    $idCliente = $_POST['idCliente'];
     $nombre = $_POST['nombre'];
     $apellido = $_POST['apellido'];
-    $salario = $_POST['salario'];
-    $fecha_nacimiento = $_POST['fecha_nacimiento'];
+    $direccion = $_POST['direccion'];
     $telefono = $_POST['telefono'];
-    $contrasena = $_POST['contrasena'];
 
-    // Preparar la consulta SQL para insertar en la tabla empleados
-    $sql = "INSERT INTO empleado (idEmpleado, nombre, apellido, salario, fecha_nacimiento,contrasena) VALUES (?, ?, ?, ?, ?, ?)";
+    // Preparar la consulta SQL para insertar en la tabla clientes
+    $sql = "INSERT INTO clientes (id_Cliente, nombre, apellido, direccion) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ississ", $idEmpleado, $nombre, $apellido, $salario, $fecha_nacimiento, $contrasena);
+    $stmt->bind_param("isss", $idCliente, $nombre, $apellido, $direccion);
 
     // Ejecutar la consulta SQL
     if ($stmt->execute()) {
         // Preparar la consulta SQL para insertar en la tabla telefono
-        $sqlTelefono = "INSERT INTO telefono (Empleados_id_Empleado, numero) VALUES (?, ?)";
+        $sqlTelefono = "INSERT INTO telefono (Clientes_id_cliente, numero) VALUES (?, ?)";
         $stmtTelefono = $conn->prepare($sqlTelefono);
-        $stmtTelefono->bind_param("is", $idEmpleado, $telefono);
+        $stmtTelefono->bind_param("is", $idCliente, $telefono);
 
         // Ejecutar la consulta SQL
         if ($stmtTelefono->execute()) {
-            echo "Empleado y teléfono registrados con éxito.";
-            // Redirige al usuario a empleados.php solo si la inserción fue exitosa
-            header("Location: empleados.php");
+            echo "Cliente y teléfono registrados con éxito.";
+            // Redirige al usuario a clientes.php solo si la inserción fue exitosa
+            header("Location: clientes.php");
             exit();
         } else {
             echo "Error al insertar el teléfono: " . $stmtTelefono->error;
         }
     } else {
-        echo "Error al insertar el empleado: " . $stmt->error;
+        echo "Error al insertar el cliente: " . $stmt->error;
     }
 }
 ?>
@@ -54,8 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="CSS/Mainstyles.css">
     <link rel="stylesheet" href="CSS/ComprasStyles.css">
-    <link rel="stylesheet" href="CSS/EmpleadoStyles.css">
-    <title>Página Principal</title>
+    <link rel="stylesheet" href="CSS/EmpleadoStyle.css">
+    <title>Registro de Cliente</title>
 </head>
 
 <body>
@@ -82,24 +80,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <!-- Contenido principal -->
         <div class="main-container">
-            <h2>Registro de Empleado</h2>
+            <h2>Registro de Cliente</h2>
 
-            <!-- Aquí va el formulario de registro de empleados -->
-            <form method="post" action="registrar_empleado.php">
-                <label for="idEmpleado">ID del Empleado:</label><br>
-                <input type="number" id="idEmpleado" name="idEmpleado"><br>
+            <!-- Aquí va el formulario de registro de clientes -->
+            <form method="post" action="registrar_cliente.php">
+                <label for="idCliente">ID del Cliente:</label><br>
+                <input type="number" id="idCliente" name="idCliente"><br>
                 <label for="nombre">Nombre:</label><br>
                 <input type="text" id="nombre" name="nombre"><br>
                 <label for="apellido">Apellido:</label><br>
                 <input type="text" id="apellido" name="apellido"><br>
-                <label for="salario">Salario:</label><br>
-                <input type="number" id="salario" name="salario"><br>
-                <label for="fecha_nacimiento">Fecha de Nacimiento:</label><br>
-                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"><br>
+                <label for="direccion">Dirección:</label><br>
+                <input type="text" id="direccion" name="direccion"><br>
                 <label for="telefono">Teléfono:</label><br>
                 <input type="tel" id="telefono" name="telefono"><br>
-                <label for="contrasena">Contraseña:</label><br>
-                <input type="password" id="contrasena" name="contrasena"><br>
                 <input type="submit" value="Registrar">
             </form>
         </div>

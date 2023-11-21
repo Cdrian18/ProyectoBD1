@@ -31,9 +31,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script type='text/javascript'>alert('Nueva compra registrada con éxito. ID de la compra: " . $last_id . "');</script>";
 
         // Obtén los arrays de materiales, cantidades y precios
-        $materiales = explode(',',rtrim($_POST['material'][0], ','));
-        $cantidades = explode(',',rtrim($_POST['cantidad'][0], ','));
-        $precios = explode(',',rtrim($_POST['precio'][0], ','));
+        $materiales = explode(',', rtrim($_POST['material'][0], ','));
+        $cantidades = explode(',', rtrim($_POST['cantidad'][0], ','));
+        $precios = explode(',', rtrim($_POST['precio'][0], ','));
 
         // Prepara la consulta SQL para los detalles de la compra
         $detalleCompraQuery = $conn->prepare("INSERT INTO detalles_compra (compras_id_compra, Materiales_id_material, cantidad, precio) VALUES (?, ?, ?, ?)");
@@ -83,6 +83,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <li><a href="envios.php">Envíos</a></li>
                 <li><a href="perfil.php">Perfil</a></li>
                 <li><a href="compras.php">Compras</a></li>
+                <li><a href="empleados.php">Empleados</a></li>
+                <li><a href="clientes.php">Clientes</a></li>
+                <li><a href="estadisticas.php">Estadísticas</a></li>
             </ul>
         </nav>
 
