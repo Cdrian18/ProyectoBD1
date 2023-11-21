@@ -17,11 +17,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $salario = $_POST['salario'];
     $fecha_nacimiento = $_POST['fecha_nacimiento'];
     $telefono = $_POST['telefono'];
+    $contrasena = $_POST['contrasena'];
 
     // Preparar la consulta SQL para insertar en la tabla empleados
-    $sql = "INSERT INTO empleado (idEmpleado, nombre, apellido, salario, fecha_nacimiento) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO empleado (idEmpleado, nombre, apellido, salario, fecha_nacimiento,contrasena) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("issis", $idEmpleado, $nombre, $apellido, $salario, $fecha_nacimiento);
+    $stmt->bind_param("ississ", $idEmpleado, $nombre, $apellido, $salario, $fecha_nacimiento, $contrasena);
 
     // Ejecutar la consulta SQL
     if ($stmt->execute()) {
@@ -53,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="CSS/Mainstyles.css">
     <link rel="stylesheet" href="CSS/ComprasStyles.css">
-    <link rel="stylesheet" href="CSS/EmpleadoStyle.css">
+    <link rel="stylesheet" href="CSS/EmpleadoStyles.css">
     <title>Página Principal</title>
 </head>
 
@@ -95,6 +96,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"><br>
                 <label for="telefono">Teléfono:</label><br>
                 <input type="tel" id="telefono" name="telefono"><br>
+                <label for="contrasena">Contraseña:</label><br>
+                <input type="password" id="contrasena" name="contrasena"><br>
                 <input type="submit" value="Registrar">
             </form>
         </div>

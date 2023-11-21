@@ -65,7 +65,7 @@ if (isset($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="CSS/Mainstyles.css">
     <link rel="stylesheet" href="CSS/ComprasStyles.css">
-    <link rel="stylesheet" href="CSS/EmpleadoStyle.css">
+    <link rel="stylesheet" href="CSS/EmpleadoStyles.css">
     <title>Página Principal</title>
 </head>
 
