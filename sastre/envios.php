@@ -42,30 +42,39 @@
             }
 
             // Obtener los pedidos asignados al empleado con estado en proceso o pendiente
-            $idEmpleado = $_SESSION['idEmpleado'];
-            $sql_pedidos = "SELECT id_pedido, estado FROM Pedidos 
-                            WHERE idCliente IN (SELECT idCliente FROM Trabajo_Empleado WHERE Empleados_id_empleado = '$idEmpleado')
-                            AND (estado = 'En proceso' OR estado = 'Pendiente')";
-            $result_pedidos = $conn->query($sql_pedidos);
+$idEmpleado = $_SESSION['idEmpleado'];
+$sql_pedidos = "SELECT P.id_pedido, P.estado, C.direccion
+                FROM Pedidos P
+                JOIN Clientes C ON P.idCliente = C.id_Cliente
+                WHERE P.idCliente IN (SELECT idCliente FROM Trabajo_Empleado WHERE Empleados_id_empleado = '$idEmpleado')
+                AND (P.estado = 'En proceso' OR P.estado = 'Pendiente')";
+$result_pedidos = $conn->query($sql_pedidos);
 
-            if ($result_pedidos->num_rows > 0) {
-                echo "<ul class='envios-list'>";
-                while ($row_pedido = $result_pedidos->fetch_assoc()) {
-                    $idPedido = $row_pedido['id_pedido'];
-                    $estadoPedido = $row_pedido['estado'];
+if ($result_pedidos === FALSE) {
+    die("Error en la consulta: " . $conn->error);
+}
 
-                    echo "<li class='envios-item'>";
-                    echo "Pedido ID: $idPedido - Estado: $estadoPedido";
-                    echo "<form action='' method='post'>";
-                    echo "<input type='hidden' name='idPedido' value='$idPedido'>";
-                    echo "<button type='submit' name='asignarEnvio'>Asignar Envío</button>";
-                    echo "</form>";
-                    echo "</li>";
-                }
-                echo "</ul>";
-            } else {
-                echo "No hay pedidos en proceso o pendientes asignados a este empleado.";
-            }
+if ($result_pedidos->num_rows > 0) {
+    echo "<ul class='envios-list'>";
+    while ($row_pedido = $result_pedidos->fetch_assoc()) {
+        $idPedido = $row_pedido['id_pedido'];
+        $estadoPedido = $row_pedido['estado'];
+        $direccionCliente = $row_pedido['direccion'];
+
+        echo "<li class='envios-item'>";
+        echo "Pedido ID: $idPedido - Estado: $estadoPedido - Dirección Cliente: $direccionCliente";
+        echo "<form action='' method='post'>";
+        echo "<input type='hidden' name='idPedido' value='$idPedido'>";
+        echo "<button type='submit' name='asignarEnvio'>Asignar Envío</button>";
+        echo "</form>";
+        echo "</li>";
+    }
+    echo "</ul>";
+} else {
+    echo "No hay pedidos en proceso o pendientes asignados a este empleado.";
+}
+
+// Resto del código...
 
             // Lógica para asignar envío al hacer clic en el botón
             if (isset($_POST['asignarEnvio'])) {

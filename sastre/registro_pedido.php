@@ -20,13 +20,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre_cliente = $_POST['nombre_cliente'];
     $apellido_cliente = $_POST['apellido_cliente'];
     $telefono_cliente = $_POST['telefono_cliente'];
+    $direccion_cliente = $_POST['direccion_cliente'];
 
     // Validar los datos según tus necesidades
 
     // Insertar el nuevo cliente o actualizar si ya existe
-    $sql_insert_cliente = "INSERT INTO Clientes (id_Cliente, nombre, apellido) 
-                           VALUES ('$id_cliente', '$nombre_cliente', '$apellido_cliente')
-                           ON DUPLICATE KEY UPDATE nombre = '$nombre_cliente', apellido = '$apellido_cliente'";
+    $sql_insert_cliente = "INSERT INTO Clientes (id_Cliente, nombre, apellido, direccion) 
+                       VALUES ('$id_cliente', '$nombre_cliente', '$apellido_cliente', '$direccion_cliente')
+                       ON DUPLICATE KEY UPDATE nombre = '$nombre_cliente', apellido = '$apellido_cliente', direccion = '$direccion_cliente'";
+
 
     if ($conn->query($sql_insert_cliente) === TRUE) {
         // Obtener o actualizar el ID del cliente
@@ -144,6 +146,9 @@ $conn->close();
 
                 <label for="telefono_cliente">Teléfono del Cliente:</label>
                 <input type="text" id="telefono_cliente" name="telefono_cliente" required>
+
+                <label for="direccion_cliente">Dirección del Cliente:</label>
+                <input type="text" id="direccion_cliente" name="direccion_cliente" required>
 
                 <!-- Sección para añadir prendas al pedido -->
                 <h3>Prendas</h3>
