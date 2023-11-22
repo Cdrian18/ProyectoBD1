@@ -11,13 +11,6 @@ $mesActual = date('m');
 $anioActual = date('Y');
 
 
-// Ejecutar las consultas y almacenar los resultados
-
-
-// Obtener los resultados
-
-
-
 // Consultas SQL
 $query1 = "SELECT COUNT(*) AS totalClientes FROM clientes";
 $query2 = "SELECT COUNT(*) AS totalEmpleados FROM empleado";
@@ -39,6 +32,37 @@ $queryPrenda = "SELECT p.nombre, SUM(d.cantidad) AS cantidadPedida
                 LIMIT 1";
 $queryEmpleado = "SELECT nombre, MAX(salario) AS salarioMaximo FROM empleado";
 
+$queryClienteMasPedidos = "SELECT c.nombre, (SELECT COUNT(*) FROM pedidos WHERE idCliente = c.id_Cliente) as totalPedidos
+                        FROM clientes c
+                        ORDER BY totalPedidos DESC
+                        LIMIT 1";
+
+$queryVentasMaximas = "SELECT MONTHNAME(fecha) as mes, totalVentas 
+                        FROM (SELECT fecha, SUM(total) as totalVentas
+                            FROM ventas
+                            WHERE YEAR(fecha) = $anioActual
+                            GROUP BY MONTH(fecha)) as subquery
+                        ORDER BY totalVentas DESC
+                        LIMIT 1";
+
+$queryClientePedidoGrande = "SELECT c.nombre, 
+                            (SELECT MAX(dp.cantidad) 
+                            FROM pedidos p 
+                            JOIN detalles_pedido dp ON p.id_pedido = dp.Pedidos_id_pedido 
+                            WHERE p.idCliente = c.id_Cliente) as pedidoMaximo
+                            FROM clientes c
+                            ORDER BY pedidoMaximo DESC
+                            LIMIT 1";
+
+$queryProveedorCompraGrande = "SELECT pr.nombre, (SELECT MAX(dp.cantidad) 
+                                    FROM compras c 
+                                    JOIN detalles_compra dp ON c.id_compra = dp.compras_id_compra 
+                                    WHERE c.Proveedores_id_proveedor = pr.id_proveedor) as compraMaxima
+                                FROM proveedores pr
+                                ORDER BY compraMaxima DESC
+                                LIMIT 1";
+
+
 
 
 // Ejecutar las consultas y almacenar los resultados
@@ -50,6 +74,10 @@ $resultCompras = $conn->query($queryCompras);
 $resultProveedor = $conn->query($queryProveedor);
 $resultPrenda = $conn->query($queryPrenda);
 $resultEmpleado = $conn->query($queryEmpleado);
+$resultClientePedido = $conn->query($queryClienteMasPedidos);
+$resultVentasMaximas = $conn->query($queryVentasMaximas);
+$resultClienteGrande = $conn->query($queryClientePedidoGrande);
+$resultProveedorGrande = $conn->query($queryProveedorCompraGrande);
 // ...
 
 // Obtener los resultados
@@ -67,6 +95,10 @@ $cantidadPedida = $prendaResult['cantidadPedida'];
 $empleadoResult = $resultEmpleado->fetch_assoc();
 $nombreEmpleado = $empleadoResult['nombre'];
 $salarioMaximo = $empleadoResult['salarioMaximo'];
+$clientePedidoResult = $resultClientePedido->fetch_assoc()['nombre'];
+$ventasMaximasResult = $resultVentasMaximas->fetch_assoc()['mes'];
+$clienteGrandeResult = $resultClienteGrande->fetch_assoc()['nombre'];
+$proveedorGrandeResult = $resultProveedorGrande->fetch_assoc()['nombre'];
 // ...
 
 ?>
@@ -97,7 +129,6 @@ $salarioMaximo = $empleadoResult['salarioMaximo'];
                 <li><a href="pedidos.php">Pedidos</a></li>
                 <li><a href="ventas.php">Ventas</a></li>
                 <li><a href="envios.php">Envíos</a></li>
-                <li><a href="perfil.php">Perfil</a></li>
                 <li><a href="compras.php">Compras</a></li>
                 <li><a href="empleados.php">Empleados</a></li>
                 <li><a href="clientes.php">Clientes</a></li>
@@ -128,13 +159,18 @@ $salarioMaximo = $empleadoResult['salarioMaximo'];
                 </div>
 
                 <div class="panel">
-                    <h2>Total de ventas del mes</h2>
+                    <h2>Total de las ventas del mes</h2>
                     <p><?php echo $totalVentasMes; ?></p>
                 </div>
 
                 <div class="panel">
-                    <h2>Total de compras del mes</h2>
+                    <h2>Total de las compras del mes</h2>
                     <p><?php echo $totalComprasMes; ?></p>
+                </div>
+
+                <div class="panel">
+                    <h2>Mes con ventas más altas</h2>
+                    <p><?php echo $ventasMaximasResult; ?></p>
                 </div>
 
                 <div class="panel">
@@ -144,10 +180,26 @@ $salarioMaximo = $empleadoResult['salarioMaximo'];
                 </div>
 
                 <div class="panel">
+                    <h2>Proveedor con la compra mas grande suministrada</h2>
+                    <p><?php echo $proveedorGrandeResult; ?></p>
+                </div>
+
+                <div class="panel">
                     <h2>Prenda más pedida</h2>
                     <p><?php echo $nombrePrenda; ?></p>
                     <h2>Unidades pedidas: <?php echo $cantidadPedida; ?></h2>
                 </div>
+
+                <div class="panel">
+                    <h2>Cliente con más pedidos</h2>
+                    <p><?php echo $clientePedidoResult; ?></p>
+                </div>
+
+                <div class="panel">
+                    <h2>Cliente con el pedido más grande</h2>
+                    <p><?php echo $clienteGrandeResult; ?></p>
+                </div>
+
                 <div class="panel">
                     <h2>Empleado con el salario más alto</h2>
                     <p><?php echo $nombreEmpleado; ?></p>
